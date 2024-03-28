@@ -19,17 +19,6 @@ void initialize_X_Y(double *vector, int size, unsigned int seed) {
     srand(seed); //seed
     for (int i = 0; i < size; i++) {
         double random_value = (double)rand() / RAND_MAX * 100.0;
-
-        if (random_value < 0.0) {
-            random_value = 0.0;
-        }
-        else if (random_value > 99.9) {
-            random_value = 99.9;
-        }
-        else {
-            random_value = ((int)(random_value * 10.0)) / 10.0;
-        }
-
         vector[i] = random_value;
     }
 }
@@ -60,6 +49,10 @@ int main() {
 	initialize_X_Y(X, size, (unsigned int)time(NULL));
     initialize_X_Y(Y, size, (unsigned int)time(NULL)+1);
     daxpy(A, X, Y, Z, TEN);
-    //printZ(A, X, Y, Z, TEN);
+    
+    for (int i = 0; i < size; i++) {
+        printf("%d: %.1f * %.1f + %.1f = %.1f\n", i,A,X[i],Y[i],Z[i]);
+    }
+
 	return 0;
 }
