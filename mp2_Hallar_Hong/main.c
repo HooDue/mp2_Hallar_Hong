@@ -28,7 +28,7 @@ void daxpy_C(double A, double* X, double* Y, double* Z, int size) {
         Z[i] = A * X[i] + Y[i];
     }
 }
-
+/*
 double daxpy_asm_time(double A, double* X, double* Y, double* Z, int size) {
     clock_t start_asm, end_asm;
     double total_time_asm = 0.0;
@@ -46,7 +46,9 @@ double daxpy_asm_time(double A, double* X, double* Y, double* Z, int size) {
 
     return total_time_asm / 30.0;
 }
+*/
 
+/*
 double daxpy_c_time(double A, double* X, double* Y, double* Z, int size) {
     clock_t start_c, end_c;
     double total_time_c = 0.0;
@@ -64,7 +66,7 @@ double daxpy_c_time(double A, double* X, double* Y, double* Z, int size) {
 
     return total_time_c / 30.0;
 }
-
+*/
 void printZ(double A, double* X, double* Y, double* Z, int size) {
     for (int i = 0; i < size; i++) {
         printf("%d: %.1f * %.1f + %.1f = %.1f\n", i, A, X[i], Y[i], Z[i]);
@@ -87,12 +89,30 @@ int main() {
     initialize_X_Y(X, size, (unsigned int)time(NULL));
     initialize_X_Y(Y, size, (unsigned int)time(NULL) + 1);
 
-    printf("ASM Average Time: %.1f", daxpy_asm_time(A, X, Y, Z, size));
+    //printf("ASM Average Time: %.1f", daxpy_asm_time(A, X, Y, Z, size));
 
-    printf("C Average Time: %.1f", daxpy_c_time(A, X, Y, Z, size));
+    LARGE_INTEGER start, end, frequency;
+    double total_time_c = 0.0;
+
+    QueryPerformanceFrequency(&frequency);
+
+    for (int i = 0; i < 30; i++) {
+        QueryPerformanceCounter(&start);
+
+        // Performt he DAXPY C operation
+        daxpy_C(A, X, Y, Z, size);
+        QueryPerformanceCounter(&end);
+
+        double elapsed_time = (double)(end.QuadPart - start.QuadPart) / frequency.QuadPart;
+        printf("%.9f\n", elapsed_time); // Print the elapsed time in seconds with microsecond precision
+        total_time_c += elapsed_time;
+    }
+    printf("Average Time: %.6f seconds\n", total_time_c / 30.0);
+
+    //printf("C Average Time: %.1f", daxpy_c_time(A, X, Y, Z, size));
 
     // Print the results
-    printZ(A, X, Y, Z, size);
+    //printZ(A, X, Y, Z, size);
 
     // Free the dynamically allocated memory
     free(X);
