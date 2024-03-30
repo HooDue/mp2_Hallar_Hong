@@ -4,21 +4,21 @@
 #include <time.h>
 #include <math.h>
 
-#define TEN 1024            // 2^10
 #define TWENTY 1048576      // 2^20
 #define TWO_FOUR 16777216   // 2^24
-#define THIRTY 1073741824   // 2^30
+#define TWO_SEVEN 134217728 // 2^27
 
 //externs
-extern void daxpy(double A, double* X, double* Y, double* Z, int size);
+extern void daxpy(double A, double* X_a, double* Y_a, double* Z_a, int size);
 
 // for generating random numbers, only from 0.0 to 100.0 and only one decimal place
-void initialize_X_Y(double* vector, int size, unsigned int seed) {
+void initialize_X_Y(double* X_c, double* X_a, int size, unsigned int seed) {
     srand(seed); //seed
 
     for (int i = 0; i < size; i++) {
         double random_value = (double)rand() / RAND_MAX * 100.0;
-        vector[i] = random_value;
+        X_c[i] = random_value;
+        X_a[i] = random_value;
     }
 }
 
@@ -29,11 +29,12 @@ void daxpy_C(double A, double* X, double* Y, double* Z, int size) {
     }
 }
 
-void printZ(double A, double* X_c, double* Y_c, double* Z_c, int size, double* Z_a) {
-    for (int i = 1; i < 11; i++) {
+// Function for printing Z results
+void printZ(double A, double* X_c, double* Y_c, double* Z_c, double* X_a, double* Y_a, double* Z_a) {
+    for (int i = 0; i < 10; i++) {
         printf("OUTPUT NO. %d\n\n", i);
-        printf("\tC result: %.1f * %.1f + %.1f = %.1f\n", A, X_c[i], Y_c[i], Z_c[i]);
-        printf("\tx86-64 result: %.1f\n", Z_a[i]);
+        printf("\tC result: \t%.1f * %.1f + %.1f = %.1f\n", A, X_c[i], Y_c[i], Z_c[i]);
+        printf("\tx86-64 result: \t%.1f * %.1f + %.1f = %.1f\n", A, X_a[i], Y_a[i], Z_a[i]);
         printf("------------------------------------\n");
     }
 }
@@ -41,20 +42,24 @@ void printZ(double A, double* X_c, double* Y_c, double* Z_c, int size, double* Z
 int main() {
     int size = TWENTY;
     double A = 2.0;
+
     double* X_c;
     double* Y_c;
     double* Z_c;
+
     double* X_a;
     double* Y_a;
     double* Z_a;
 
-    // For C
-    LARGE_INTEGER start, end, frequency;
+    double each_time_c = 0.0;
     double total_time_c = 0.0;
+    double avg_time_c = 0.0;
 
-    // For x86-64
-    LARGE_INTEGER start_asm, end_asm, frequency_asm;
-    double total_time_asm = 0.0;
+    double each_time_a = 0.0;
+    double total_time_a = 0.0;
+    double avg_time_a = 0.0;
+
+    clock_t start_time_c, end_time_c;
 
     // Dynamically allocate memory for X, Y, and Z
     X_c = (double*)malloc(size * sizeof(double));
@@ -66,64 +71,52 @@ int main() {
     Z_a = (double*)malloc(size * sizeof(double));
 
     // Initialize X and Y with random values
-    initialize_X_Y(X_c, size, (unsigned int)time(NULL));
-    initialize_X_Y(X_a, size, (unsigned int)time(NULL));
-
-    initialize_X_Y(Y_c, size, (unsigned int)time(NULL) + 1);
-    initialize_X_Y(Y_a, size, (unsigned int)time(NULL) + 1);
+    initialize_X_Y(X_c, X_a, size, (unsigned int)time(NULL));
+    initialize_X_Y(Y_c, Y_a, size, (unsigned int)time(NULL) + 1);
 
     // For C
-    QueryPerformanceFrequency(&frequency);
-
     for (int i = 0; i < 30; i++) {
-        QueryPerformanceCounter(&start);
-
-        // Performt he DAXPY C operation
+        start_time_c = clock();
         daxpy_C(A, X_c, Y_c, Z_c, size);
+        end_time_c = clock();
 
-        QueryPerformanceCounter(&end);
+        each_time_c = ((double)(end_time_c - start_time_c)) / CLOCKS_PER_SEC;
+        printf("C [%d]: %.4f\n", i, each_time_c);
 
-        double elapsed_time_c = (double)(end.QuadPart - start.QuadPart) / frequency.QuadPart;
-
-        // For checking
-        // printf("%.9f\n", elapsed_time_c);
-
-        total_time_c += elapsed_time_c;
+        total_time_c += each_time_c;
     }
 
-    printf("AVERAGE TIME:\n");
-    printf("\tC: %.10f seconds\n", total_time_c / 30.0);
-    printf("\n");
+    printf("Total Time C: %.4f\n", total_time_c);
+
+    avg_time_c = total_time_c / 30.0;
+    printf("Average Time C: %.4f\n\n", avg_time_c);
 
     // For x86-64
-    QueryPerformanceFrequency(&frequency_asm);
-
     for (int i = 0; i < 30; i++) {
-        QueryPerformanceCounter(&start_asm);
-
-        // Performt he DAXPY ASM operation
+        clock_t start_time_a = clock();
         daxpy(A, X_a, Y_a, Z_a, size);
+        clock_t end_time_a = clock();
 
-        QueryPerformanceCounter(&end_asm);
+        each_time_a = ((double)(end_time_a - start_time_a)) / CLOCKS_PER_SEC;
+        printf("x86-64 [%d]: %.4f\n", i, each_time_a);
 
-        double elapsed_time_asm = (double)(end_asm.QuadPart - start_asm.QuadPart) / frequency_asm.QuadPart;
-
-        // For checking
-        // printf("%.9f\n", elapsed_time_asm);
-
-        total_time_c += elapsed_time_asm;
+        total_time_a += each_time_a;
     }
 
-    printf("\tx86-64: %.10f seconds\n", total_time_asm / 30.0);
+    printf("Total Time x86-64: %.4f\n", total_time_a);
+
+    avg_time_a = total_time_a / 30.0;
+    printf("Average Time x86-64: %.4f\n\n", avg_time_a);
     printf("------------------------------------\n");
 
-    // Print results
-    printZ(A, X_c, Y_c, Z_c, 10, Z_a);
-
+    // Print results of Z
+    printZ(A, X_c, Y_c, Z_c, X_a, Y_a, Z_a);
+  
     // Free the dynamically allocated memory
     free(X_c);
     free(Y_c);
     free(Z_c);
+
     free(X_a);
     free(Y_a);
     free(Z_a);
