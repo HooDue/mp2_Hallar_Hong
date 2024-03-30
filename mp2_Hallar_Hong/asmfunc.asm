@@ -1,6 +1,5 @@
 ;assemly part using x86-64
 section .data
-print_ans db "%d: A=%.1f, X[%d]=%.1f, Y[%d]=%.1f, Y[%d]=%.1f\n", 0
 
 section .text
 bits 64
