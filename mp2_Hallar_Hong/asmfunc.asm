@@ -13,26 +13,28 @@ global daxpy
 ;size in [rbp+32]
 
 daxpy:
-	push rsi
+    push rsi
     push rbp
     mov rbp, rsp
-	add rbp, 16
-	add rbp, 8
+    add rbp, 16
+    add rbp, 8
 
+mov r10, 0
+mov r10d, [rbp+32]
 mov rax, 0
 
 L1:
-	movsd xmm5, xmm0					;moved A from xmm0 to xmm5
-	mulsd xmm5, [rdx+8*rax]		        ;A*X[i]
-	vaddsd xmm1, xmm5, [r8+8*rax]		;A*X[i] + Y[i]
-	movsd [r9+8*rax], xmm1		        ;store answer  to Z[i]
+    movsd xmm5, xmm0                    ;moved A from xmm0 to xmm5
+    mulsd xmm5, [rdx+8*rax]                ;AX[i]
+    vaddsd xmm1, xmm5, [r8+8*rax]        ;AX[i] + Y[i]
+    movsd [r9+8*rax], xmm1                ;store answer  to Z[i]
     xorpd xmm1, xmm1
-	xorpd xmm5, xmm5
+    xorpd xmm5, xmm5
 
-	inc rax
-	cmp rax, [rbp+32]
-	jne L1
-	
-	pop rbp
-	pop rsi
-	ret
+    inc rax
+    cmp rax, r10
+    jne L1
+
+    pop rbp
+    pop rsi
+    ret

@@ -9,75 +9,69 @@
 #define TWO_SEVEN 134217728 // 2^27
 
 //externs
-extern void daxpy(double A, double* X_a, double* Y_a, double* Z_a, int size);
+extern void daxpy(double A, double* X, double* Y, double* Z_a, int size);
 
 // for generating random numbers, only from 0.0 to 100.0 and only one decimal place
-void initialize_X_Y(double* X_c, double* X_a, int size, unsigned int seed) {
+void initialize_X_Y(double* X, int size, unsigned int seed) {
     srand(seed); //seed
 
     for (int i = 0; i < size; i++) {
         double random_value = (double)rand() / RAND_MAX * 100.0;
-        X_c[i] = random_value;
-        X_a[i] = random_value;
+        X[i] = random_value;
     }
 }
 
 // C Version of the DAXPY
-void daxpy_C(double A, double* X, double* Y, double* Z, int size) {
+void daxpy_C(double A, double* X, double* Y, double* Z_c, int size) {
     for (int i = 0; i < size; i++) {
-        Z[i] = A * X[i] + Y[i];
+        Z_c[i] = A * X[i] + Y[i];
     }
 }
 
 // Function for printing Z results
-void printZ(double A, double* X_c, double* Y_c, double* Z_c, double* X_a, double* Y_a, double* Z_a) {
+void printZ(double A, double* X, double* Y, double* Z_c, double* Z_a) {
     for (int i = 0; i < 10; i++) {
         printf("OUTPUT NO. %d\n\n", i);
-        printf("\tC result: \t%.1f * %.1f + %.1f = %.1f\n", A, X_c[i], Y_c[i], Z_c[i]);
-        printf("\tx86-64 result: \t%.1f * %.1f + %.1f = %.1f\n", A, X_a[i], Y_a[i], Z_a[i]);
+        printf("\tC result: \t%.1f * %.1f + %.1f = %.1f\n", A, X[i], Y[i], Z_c[i]);
+        printf("\tx86-64 result: \t%.1f * %.1f + %.1f = %.1f\n", A, X[i], Y[i], Z_a[i]);
         printf("------------------------------------\n");
     }
 }
 
 int main() {
-    int size = TWENTY;
+    int size = TWO_SEVEN;
     double A = 2.0;
 
-    double* X_c;
-    double* Y_c;
+    double* X;
+    double* Y;
     double* Z_c;
-
-    double* X_a;
-    double* Y_a;
     double* Z_a;
+
+    double avg_time_c = 0.0;
+    double avg_time_a = 0.0;
 
     double each_time_c = 0.0;
     double total_time_c = 0.0;
-    double avg_time_c = 0.0;
 
     double each_time_a = 0.0;
     double total_time_a = 0.0;
-    double avg_time_a = 0.0;
 
-    clock_t start_time_c, end_time_c;
+    clock_t start_time_c, end_time_c, start_time_a, end_time_a;
 
     // Dynamically allocate memory for X, Y, and Z
-    X_c = (double*)malloc(size * sizeof(double));
-    Y_c = (double*)malloc(size * sizeof(double));
+    X = (double*)malloc(size * sizeof(double));
+    Y = (double*)malloc(size * sizeof(double));
     Z_c = (double*)malloc(size * sizeof(double));
-
-    X_a = (double*)malloc(size * sizeof(double));
-    Y_a = (double*)malloc(size * sizeof(double));
     Z_a = (double*)malloc(size * sizeof(double));
 
     // Initialize X and Y with random values
-    initialize_X_Y(X_c, X_a, size, (unsigned int)time(NULL));
-    initialize_X_Y(Y_c, Y_a, size, (unsigned int)time(NULL) + 1);
+    initialize_X_Y(X, size, (unsigned int)time(NULL));
+    initialize_X_Y(Y, size, (unsigned int)time(NULL) + 1);
 
     // For C
     for (int i = 0; i < 30; i++) {
         start_time_c = clock();
-        daxpy_C(A, X_c, Y_c, Z_c, size);
+        daxpy_C(A, X, Y, Z_c, size);
         end_time_c = clock();
 
         each_time_c = ((double)(end_time_c - start_time_c)) / CLOCKS_PER_SEC;
@@ -93,9 +87,9 @@ int main() {
 
     // For x86-64
     for (int i = 0; i < 30; i++) {
-        clock_t start_time_a = clock();
-        daxpy(A, X_a, Y_a, Z_a, size);
-        clock_t end_time_a = clock();
+        start_time_a = clock();
+        daxpy(A, X, Y, Z_a, size);
+        end_time_a = clock();
 
         each_time_a = ((double)(end_time_a - start_time_a)) / CLOCKS_PER_SEC;
         printf("x86-64 [%d]: %.4f\n", i, each_time_a);
@@ -110,15 +104,12 @@ int main() {
     printf("------------------------------------\n");
 
     // Print results of Z
-    printZ(A, X_c, Y_c, Z_c, X_a, Y_a, Z_a);
+    printZ(A, X, Y, Z_c, Z_a);
   
     // Free the dynamically allocated memory
-    free(X_c);
-    free(Y_c);
+    free(X);
+    free(Y);
     free(Z_c);
-
-    free(X_a);
-    free(Y_a);
     free(Z_a);
 
     return 0;
