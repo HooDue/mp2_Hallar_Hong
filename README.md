@@ -25,8 +25,7 @@ Debug Mode:
 Release Mode:
         C: 
         x86-64:
-
-        ![image](https://github.com/HooDue/mp2_Hallar_Hong/assets/127380830/20448e3c-a19c-4e6f-9669-077d284b8ba0)
+![image](https://github.com/HooDue/mp2_Hallar_Hong/assets/127380830/615a062a-3b39-4713-bd1d-145c08722bf7)
 
 Analysis:
     Execution time was used to compare performance between (1) the C program version of the kernel and (2) the x86-64 assembly language version.  Kernel performs the DAXPY (A*X + Y) function where vectors X, Y, and Z are double-precision floats. 
