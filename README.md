@@ -7,11 +7,11 @@
 **Analysis:**
     Execution time was used to compare performance between (1) the C program version of the kernel and (2) the x86-64 assembly language version.  Kernel performs the DAXPY (A*X + Y) function where vectors X, Y, and Z are double-precision floats. 
 
-In our code, we used a function to generate random inputs for vectors X and Y. We also did dynamic allocation of data on the heap; otherwise, the code would use a large amount of stack space, exceeding the stack size limit. 
+    In our code, we used a function to generate random inputs for vectors X and Y. We also did dynamic allocation of data on the heap; otherwise, the code would use a large amount of stack space, exceeding the stack size limit. 
 
-In the tables above, the average execution time is captured by running 30 times each n-size of input, 220 224 and 227 respectively. 228 and further was tested, but it resulted in computer lags. Our device could not run that amount of n inputs, although it sometimes permits, but it takes too long for the computer to respond. 
+    In the tables above, the average execution time is captured by running 30 times each n-size of input, 2^20, 2^24, and 2^27, respectively. 2^28 and further was tested, but it resulted in computer lags. Our device could not run that amount of n inputs, although it sometimes permits, but it takes too long for the computer to respond. 
 
-As shown in the tables, the x86-64 assembly version of the kernel happens to execute faster than the C version in some cases because assembly language is directly assembled into CPU instructions, while C needs to be compiled first into the assembly.  But there are instances where the x86-64 is slower than the C. Likewise, for  n=224  , the execution time is slower than C (small difference). This might be due to various reasons, like the optimization strategies used in C that differ from the assembly, or that x86-64 assembly needs more memory for pointers and some data types which can affect its performance.
+    As shown in the tables, the x86-64 assembly version of the kernel happens to execute faster than the C version in some cases because assembly language is directly assembled into CPU instructions, while C needs to be compiled first into the assembly; however, there are instances where the x86-64 is slower than the C. Likewise, for  n=2^24, the execution time is slower than C (small difference). This might be due to various reasons, like the optimization strategies used in C that differ from the assembly or the fact that the x86-64 assembly needs more memory for pointers and some data types, which can affect its performance.
 
 
 
