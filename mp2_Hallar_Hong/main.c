@@ -39,7 +39,7 @@ void printZ(double A, double* X, double* Y, double* Z_c, double* Z_a) {
 }
 
 int main() {
-    int size = TWO_SEVEN;
+    int size = TWENTY;
     double A = 2.0;
 
     double* X;
