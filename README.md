@@ -12,7 +12,7 @@ In our code, we used a function to generate random inputs for vectors X and Y. W
 
 In the tables above, the average execution time is captured by running 30 times each n-size of input, 2^20, 2^24, and 2^27, respectively. 2^28 and further was tested, but it resulted in computer lags. Our device could not run that amount of n inputs, although it sometimes permits, but it takes too long for the computer to respond. 
 
-As shown in the tables, the x86-64 assembly version of the kernel happens to execute faster than the C version in some cases because assembly language is directly assembled into CPU instructions, while C needs to be compiled first into the assembly; however, there are instances where the x86-64 is slower than the C. Likewise, for  n=2^24, the execution time is slower than C (small difference). This might be due to various reasons, like the optimization strategies used in C that differ from the assembly or the fact that the x86-64 assembly needs more memory for pointers and some data types, which can affect its performance.
+As shown in the tables, the x86-64 assembly version of the kernel happens to execute faster than the C version in some cases, like those in the debug mode. Because assembly language is directly assembled into CPU instructions, while C needs to be compiled first into the assembly, and it only uses minimal optimization; however, there are instances where the x86-64 is slower than the C. Likewise, for  n=2^24, the execution time is slower than C (small difference) and also it is slower in release mode. This might be due to various reasons, like the optimization strategies used in C or that the x86-64 assembly needs more memory for pointers and some data types, which can affect its performance.
 
 
 
