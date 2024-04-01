@@ -1,6 +1,6 @@
-Members: Hallar, Francine Marie F. & Hong, Letty V.  LBYARCH S11
+**Members: Hallar, Francine Marie F. & Hong, Letty V.  LBYARCH S11**
 
-i.) comparative execution time and short analysis of the performance of the kernels
+### **i.) comparative execution time and short analysis of the performance of the kernels**
     
 Average execution time for running 30 times for n^20:
 Debug Mode:
@@ -27,7 +27,7 @@ Release Mode:
         x86-64:
 ![image](https://github.com/HooDue/mp2_Hallar_Hong/assets/127380830/615a062a-3b39-4713-bd1d-145c08722bf7)
 
-Analysis:
+**Analysis:**
     Execution time was used to compare performance between (1) the C program version of the kernel and (2) the x86-64 assembly language version.  Kernel performs the DAXPY (A*X + Y) function where vectors X, Y, and Z are double-precision floats. 
 
 In our code, we used a function to generate random inputs for vectors X and Y. We also did dynamic allocation of data on the heap; otherwise, the code would use a large amount of stack space, exceeding the stack size limit. 
@@ -38,7 +38,7 @@ As shown in the tables, the x86-64 assembly version of the kernel happens to exe
 
 
 
- ii.) Take a screenshot of the program output with the correctness check (C) and correctness check (x86-64).
+### **ii.) Take a screenshot of the program output with the correctness check (C) and correctness check (x86-64).**
  
 Average execution time for running 30 times for n^20
     ![2^20 Debug Mode](https://github.com/HooDue/mp2_Hallar_Hong/assets/98597121/5c73cccb-5aa8-4e02-a955-0f69a2bc2480)
