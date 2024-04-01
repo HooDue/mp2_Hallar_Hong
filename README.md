@@ -1,30 +1,7 @@
 **Members: Hallar, Francine Marie F. & Hong, Letty V.  LBYARCH S11**
 
 ### **i.) comparative execution time and short analysis of the performance of the kernels**
-    
-Average execution time for running 30 times for n^20:
-Debug Mode:
-      C: 0.0101
-      x86-64:0.0060
-Release Mode:
-      C: 0.0025
-      x86-64:0.0028
-    
-Average execution time for running 30 times for n^24:
-Debug Mode:
-        C: 
-        x86-64: 
-Release Mode:
-        C: 
-        x86-64:
 
-Average execution time for running 30 times for n^27:
-Debug Mode:
-        C: 
-        x86-64:
-Release Mode:
-        C: 
-        x86-64:
 ![image](https://github.com/HooDue/mp2_Hallar_Hong/assets/127380830/615a062a-3b39-4713-bd1d-145c08722bf7)
 
 **Analysis:**
