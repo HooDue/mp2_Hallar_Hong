@@ -1,4 +1,5 @@
 **Members: Hallar, Francine Marie F. & Hong, Letty V.  LBYARCH S11**
+release and debug mode: x64
 
 ### **i.) comparative execution time and short analysis of the performance of the kernels**
 
